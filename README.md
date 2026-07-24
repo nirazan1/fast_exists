@@ -113,14 +113,15 @@ FastExists.stats
 
 ---
 
-## 📖 Documentation
+## 📖 Performance Intelligence Suite & Documentation
 
-- [Architecture Guide](docs/ARCHITECTURE.md)
-- [Deployment Guide](docs/DEPLOYMENT.md)
-- [Redis & RedisBloom Guide](docs/REDIS_GUIDE.md)
-- [Memory Sizing Guide](docs/MEMORY_SIZING.md)
-- [Performance & Benchmarks](docs/BENCHMARKS.md)
-- [FAQ & Troubleshooting](docs/FAQ.md)
+- 🧠 **[Performance Intelligence Suite Guide](docs/PERFORMANCE_INTELLIGENCE.md)** (`health!`, `analyze!`, `audit!`, `doctor!`, `report!`)
+- 🏛️ [Architecture Guide](docs/ARCHITECTURE.md)
+- 🚀 [Deployment Guide](docs/DEPLOYMENT.md)
+- 🔴 [Redis & RedisBloom Guide](docs/REDIS_GUIDE.md)
+- 📏 [Memory Sizing Guide](docs/MEMORY_SIZING.md)
+- ⚡ [Performance & Benchmarks](docs/BENCHMARKS.md)
+- ❓ [FAQ & Troubleshooting](docs/FAQ.md)
 
 ---
 
