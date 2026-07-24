@@ -3,7 +3,7 @@
 > **Ultra-Fast Existence Checks in Ruby on Rails Using Probabilistic Data Structures**
 
 [![CI](https://github.com/nirazan1/fast_exists/actions/workflows/ci.yml/badge.svg)](https://github.com/nirazan1/fast_exists/actions)
-[![Gem Version](https://badge.fury.io/rb/fast_exists.svg)](https://badge.fury.io/rb/fast_exists)
+[![Gem Version](https://img.shields.io/badge/version-v1.0.0-blue.svg)](https://github.com/nirazan1/fast_exists/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **FastExists** is a production-ready Ruby gem that drastically reduces unnecessary database queries in Ruby on Rails applications by evaluating existence checks against ultra-fast, thread-safe probabilistic data structures (Bloom Filters, Scalable Bloom Filters, Cuckoo Filters, HyperLogLog) while **keeping the database as the single source of truth**.
@@ -41,10 +41,14 @@ High-volume Rails applications handle millions or billions of existence checks w
 
 ## 📦 Installation
 
-Add `fast_exists` to your Gemfile:
+Add `fast_exists` (latest version **v1.0.0**) to your Gemfile:
 
 ```ruby
-gem "fast_exists"
+# From RubyGems
+gem "fast_exists", "~> 1.0.0"
+
+# Or directly from GitHub repository
+gem "fast_exists", git: "https://github.com/nirazan1/fast_exists.git", tag: "v1.0.0"
 ```
 
 Then run:
