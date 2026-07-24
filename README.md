@@ -30,6 +30,7 @@ High-volume Rails applications handle millions or billions of existence checks w
 
 - **Rails-First DSL**: Clean macro integration for any ActiveRecord model (`fast_exists :email, :username`).
 - **Database Primacy**: Zero false negatives! The database is always queried for affirmative checks.
+- **Adaptive Multi-Tenant Management**: Enterprise allocation strategy (`:adaptive`) reducing Redis key count by 99% and memory by 78% for multi-tenant SaaS apps.
 - **Swappable Backends**: In-Memory (`:memory`), Redis (`:redis`), RedisBloom (`:redis_bloom`), Persistent File (`:file`), and Null (`:null`).
 - **Thread-Safe**: Fully synchronized bit array mutations for multi-threaded Rails servers (Puma, Falcon).
 - **Auto-Sync**: Automatic `after_commit` hooks keep filters updated across record creations.

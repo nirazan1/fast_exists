@@ -101,4 +101,25 @@ class FastExistsTest < Minitest::Test
     health_out, _ = capture_io { FastExists::CLI.start(["health"]) }
     assert_match(/Operational Health Status/, health_out)
   end
+
+  def test_multi_tenant_adaptive_strategy
+    adaptive = FastExists::MultiTenant::Strategies::AdaptiveStrategy.new
+    assert_equal :tiny, adaptive.classify_tenant(1, 100)
+    assert_equal :small, adaptive.classify_tenant(2, 50_000)
+    assert_equal :medium, adaptive.classify_tenant(3, 500_000)
+    assert_equal :large, adaptive.classify_tenant(4, 2_000_000)
+
+    adaptive.add(1, "email", "test@example.com")
+    assert_equal true, adaptive.contains?(1, "email", "test@example.com")
+    assert_equal false, adaptive.contains?(1, "email", "missing@example.com")
+  end
+
+  def test_multi_tenant_recommendation_engine
+    tenants = {}
+    4287.times { |i| tenants[i + 1] = i < 10 ? 1_200_000 : 2_000 }
+    rec = FastExists::MultiTenant::RecommendationEngine.analyze(tenants)
+    assert_equal 4287, rec[:total_tenants]
+    assert_equal 13, rec[:estimated_redis_keys]
+    assert rec[:redis_key_reduction_pct] >= 99.0
+  end
 end

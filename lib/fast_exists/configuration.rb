@@ -10,7 +10,11 @@ module FastExists
                   :metrics,
                   :redis,
                   :file_path,
-                  :logger
+                  :logger,
+                  :multi_tenant,
+                  :tenant_strategy,
+                  :tenant_thresholds,
+                  :key_prefix
 
     def initialize
       @backend = :memory
@@ -22,6 +26,16 @@ module FastExists
       @redis = nil
       @file_path = nil
       @logger = defined?(Rails) && Rails.respond_to?(:logger) ? Rails.logger : nil
+
+      # Multi-tenant enterprise configuration
+      @multi_tenant = false
+      @tenant_strategy = :adaptive
+      @tenant_thresholds = {
+        tiny: 10_000,
+        small: 100_000,
+        medium: 1_000_000
+      }
+      @key_prefix = "fast_exists"
     end
 
     def reset!
