@@ -15,9 +15,8 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.0.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/fastexists/fast_exists"
-  spec.metadata["changelog_uri"] = "https://github.com/fastexists/fast_exists/blob/main/CHANGELOG.md"
-  spec.metadata["rubygems_mfa_required"] = "true"
+  spec.metadata["source_code_uri"] = "https://github.com/nirazan1/fast_exists"
+  spec.metadata["changelog_uri"] = "https://github.com/nirazan1/fast_exists/blob/main/CHANGELOG.md"
 
   spec.files = Dir.glob("{lib,bin,config,app,benchmarks,docs}/**/*") + %w[README.md LICENSE.txt]
   spec.bindir = "bin"
