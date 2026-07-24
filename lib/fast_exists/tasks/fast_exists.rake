@@ -10,6 +10,47 @@ namespace :fast_exists do
     end
   end
 
+  desc "Display runtime FastExists statistics"
+  task :stats => :environment do
+    puts FastExists.stats(format: ENV["FORMAT"] ? ENV["FORMAT"].to_sym : :console)
+  end
+
+  desc "Perform operational health check"
+  task :health => :environment do
+    res = FastExists.health!
+    puts "Operational Health Status: #{res[:overall_status].to_s.upcase}"
+    res[:checks].each do |c|
+      mark = c[:status] == :pass ? "✓" : "⚠"
+      puts "  #{mark} #{c[:name]}: #{c[:message]}"
+    end
+  end
+
+  desc "Analyze models and detect existence check candidates"
+  task :analyze => :environment do
+    fmt = ENV["FORMAT"] ? ENV["FORMAT"].to_sym : :console
+    res = FastExists.analyze!(format: fmt)
+    puts res.is_a?(String) ? res : JSON.pretty_generate(res)
+  end
+
+  desc "Perform deep architectural audit"
+  task :audit => :environment do
+    res = FastExists.audit!
+    puts JSON.pretty_generate(res)
+  end
+
+  desc "Diagnose issues and generate recommendations & code snippets"
+  task :doctor => :environment do
+    fmt = ENV["FORMAT"] ? ENV["FORMAT"].to_sym : :console
+    puts FastExists.doctor!(format: fmt)
+  end
+
+  desc "Generate comprehensive performance & architecture report"
+  task :report => :environment do
+    fmt = ENV["FORMAT"] ? ENV["FORMAT"].to_sym : :html
+    out = ENV["OUTPUT"] || "fast_exists_report.#{fmt}"
+    FastExists.report!(format: fmt, output: out)
+  end
+
   desc "Rebuild FastExists bloom filters for a model and attribute"
   task :rebuild, [:model, :attribute] => :environment do |_t, args|
     model_name = args[:model]
@@ -24,16 +65,6 @@ namespace :fast_exists do
     puts "Rebuilding FastExists filter for #{klass} #{attribute || '(all attributes)'}..."
     klass.rebuild_fast_exists!(attribute)
     puts "Rebuild complete!"
-  end
-
-  desc "Display runtime FastExists statistics"
-  task :stats, [:model] => :environment do |_t, args|
-    if args[:model]
-      klass = args[:model].constantize
-      puts JSON.pretty_generate(klass.fast_exists_stats)
-    else
-      puts JSON.pretty_generate(FastExists.stats)
-    end
   end
 
   desc "Verify false positive rate and health of FastExists bloom filter"

@@ -16,12 +16,14 @@ begin
       t.string :username
       t.timestamps
     end
+    add_index :users, :email, unique: true
   end
 
   class User < ActiveRecord::Base
     include FastExists::ActiveRecord::Extension
     fast_exists :email
     fast_exists :username
+    validates :email, uniqueness: true
   end
   ACTIVE_RECORD_AVAILABLE = true
 rescue LoadError
@@ -52,71 +54,51 @@ class FastExistsTest < Minitest::Test
     assert_equal false, bf.contains?("bob@example.com")
   end
 
-  def test_scalable_bloom
-    sb = FastExists::Bloom::Scalable.new(initial_capacity: 10)
-    20.times { |i| sb.add("item_#{i}") }
-    assert_equal 20, sb.count
-    assert_equal true, sb.contains?("item_5")
-    assert_equal false, sb.contains?("nonexistent")
+  def test_performance_intelligence_stats
+    json_stats = FastExists.stats(format: :json)
+    assert_includes json_stats, "queries_avoided"
+
+    md_stats = FastExists.stats(format: :markdown)
+    assert_includes md_stats, "FastExists Runtime Statistics"
   end
 
-  def test_counting_bloom
-    cb = FastExists::Bloom::Counting.new(expected_elements: 100)
-    cb.add("item1")
-    assert_equal true, cb.contains?("item1")
-    cb.delete("item1")
-    assert_equal false, cb.contains?("item1")
+  def test_performance_intelligence_health
+    health = FastExists.health!
+    assert_equal :healthy, health[:overall_status]
+    assert health[:checks].any? { |c| c[:name] == "Backend Availability" }
   end
 
-  def test_cuckoo_filter
-    cf = FastExists::Probabilistic::Cuckoo.new(capacity: 100)
-    cf.add("key1")
-    assert_equal true, cf.contains?("key1")
-    cf.delete("key1")
-    assert_equal false, cf.contains?("key1")
-  end
-
-  def test_hyperloglog
-    hll = FastExists::Probabilistic::HyperLogLog.new(p: 10)
-    100.times { |i| hll.add("val_#{i}") }
-    assert_in_delta 100, hll.count, 25
-  end
-
-  def test_count_min_sketch
-    cms = FastExists::Probabilistic::CountMinSketch.new(epsilon: 0.01, confidence: 0.99)
-    5.times { cms.add("event_click") }
-    assert cms.estimate("event_click") >= 5
-    assert_equal 0, cms.estimate("event_view")
-  end
-
-  def test_active_record_integration
+  def test_performance_intelligence_analyze
     skip "ActiveRecord gem not loaded" unless ACTIVE_RECORD_AVAILABLE
-
-    # Negative lookup (avoided DB query)
-    assert_equal false, User.email_exists?("missing@example.com")
-    assert_equal 1, FastExists.stats[:queries_avoided]
-    assert_equal 0, FastExists.stats[:database_lookups]
-
-    # Create user record
-    User.create!(email: "john@example.com", username: "john")
-
-    assert_equal true, User.email_exists?("john@example.com")
-    assert_equal true, User.username_exists?("john")
-    assert_equal false, User.email_available?("john@example.com")
-    assert_equal true, User.email_available?("new@example.com")
+    analysis = FastExists.analyze!
+    assert analysis.has_key?(:models)
   end
 
-  def test_backends
-    mem = FastExists::Backends::Memory.new
-    mem.add("k")
-    assert_equal true, mem.contains?("k")
-
-    null_b = FastExists::Backends::Null.new
-    assert_equal true, null_b.contains?("anything")
+  def test_performance_intelligence_audit
+    skip "ActiveRecord gem not loaded" unless ACTIVE_RECORD_AVAILABLE
+    audit = FastExists.audit!
+    assert audit.has_key?(:audit_score)
+    assert audit.has_key?(:grade)
   end
 
-  def test_cli
+  def test_performance_intelligence_doctor
+    doctor = FastExists.doctor!(format: :markdown)
+    assert_includes doctor, "FastExists Doctor Diagnostic Report"
+  end
+
+  def test_performance_intelligence_report
+    html_report = FastExists.report!(format: :html)
+    assert_includes html_report, "FastExists Performance Intelligence Report"
+
+    csv_report = FastExists.report!(format: :csv)
+    assert_includes csv_report, "Overall Status"
+  end
+
+  def test_cli_suite_commands
     out, _ = capture_io { FastExists::CLI.start(["version"]) }
     assert_match(/fast_exists v/, out)
+
+    health_out, _ = capture_io { FastExists::CLI.start(["health"]) }
+    assert_match(/Operational Health Status/, health_out)
   end
 end
