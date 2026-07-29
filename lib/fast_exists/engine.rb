@@ -4,11 +4,6 @@ if defined?(Rails::Engine)
   module FastExists
     class Engine < ::Rails::Engine
       isolate_namespace FastExists
-
-      routes.draw do
-        root to: "dashboard#index"
-        get "/stats", to: "dashboard#stats"
-      end
     end
 
     class DashboardController < ActionController::Base
