@@ -11,8 +11,8 @@ module FastExists
         findings = []
 
         # 1. Inspect ActiveRecord Models & Indexes
-        if defined?(ActiveRecord::Base)
-          ActiveRecord::Base.descendants.reject(&:abstract_class?).each do |klass|
+        if defined?(::ActiveRecord::Base)
+          ::ActiveRecord::Base.descendants.reject(&:abstract_class?).each do |klass|
             next unless klass.respond_to?(:table_exists?) && klass.table_exists?
             inspect_model(klass, findings)
           end

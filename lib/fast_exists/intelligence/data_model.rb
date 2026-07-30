@@ -45,7 +45,7 @@ module FastExists
           ruby_version: RUBY_VERSION,
           ruby_platform: RUBY_PLATFORM,
           rails_version: defined?(Rails) && Rails.respond_to?(:version) ? Rails.version : "N/A",
-          database_adapter: defined?(ActiveRecord::Base) ? (ActiveRecord::Base.connection_db_config.adapter rescue "sqlite3") : "N/A",
+          database_adapter: defined?(::ActiveRecord::Base) ? (::ActiveRecord::Base.connection_db_config.adapter rescue "sqlite3") : "N/A",
           backend: FastExists.configuration.backend.to_s,
           auto_sync: FastExists.configuration.auto_sync,
           instrumentation: FastExists.configuration.instrumentation,

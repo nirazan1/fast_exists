@@ -36,12 +36,12 @@ module FastExists
       private
 
       def determine_models(target, models)
-        if target.is_a?(Class) && target < ActiveRecord::Base
+        if target.is_a?(Class) && defined?(::ActiveRecord::Base) && target < ::ActiveRecord::Base
           [target]
         elsif models.is_a?(Array)
           models.compact
-        elsif defined?(ActiveRecord::Base)
-          ActiveRecord::Base.descendants.reject(&:abstract_class?)
+        elsif defined?(::ActiveRecord::Base)
+          ::ActiveRecord::Base.descendants.reject(&:abstract_class?)
         else
           []
         end
@@ -127,7 +127,7 @@ module FastExists
         {
           ruby_version: RUBY_VERSION,
           rails_version: defined?(Rails) && Rails.respond_to?(:version) ? Rails.version : "N/A",
-          database: defined?(ActiveRecord::Base) ? (ActiveRecord::Base.connection_db_config.adapter rescue "sqlite3") : "N/A"
+          database: defined?(::ActiveRecord::Base) ? (::ActiveRecord::Base.connection_db_config.adapter rescue "sqlite3") : "N/A"
         }
       end
     end
